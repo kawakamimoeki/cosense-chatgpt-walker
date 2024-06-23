@@ -55,13 +55,6 @@ let messages: Array<any> = [];
 const exploredPages = new Array<CosensePage>();
 let queries = [];
 
-async function loadJsonFile(filePath: string): Promise<CosenseData> {
-  const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-  const cosenseData = new CosenseData(jsonData.name);
-  cosenseData.pages = jsonData.pages;
-  return cosenseData;
-}
-
 async function fetchCosense(projectName: string): Promise<CosenseData> {
   let skip = 0;
   let cosenseData = new CosenseData(projectName);
@@ -83,8 +76,12 @@ async function fetchCosensePage(
   pageName: string
 ): Promise<string> {
   const url = `https://scrapbox.io/api/pages/${projectName}/${pageName}/text`;
-  const response = await axios.get(url);
-  return response.data;
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch {
+    return pageName;
+  }
 }
 
 async function completion(prompt: string): Promise<string | null> {
@@ -201,8 +198,6 @@ async function walk(question: string, cosenseData: CosenseData) {
       })
       .join("\n")}`
   );
-
-  console.log(messages);
 }
 
 const rl = readline.createInterface({
@@ -219,12 +214,7 @@ async function cliLoop(): Promise<void> {
   console.log("Type your questions or 'exit' to quit.");
 
   let cosenseData;
-  if (process.argv[2]) {
-    cosenseData = await fetchCosense(process.argv[2]);
-  } else {
-    const jsonFilePath = process.env.COSENSE_DATA_PATH;
-    cosenseData = await loadJsonFile(path.resolve(jsonFilePath));
-  }
+  cosenseData = await fetchCosense(process.argv[2]);
 
   while (true) {
     const question = await askQuestion("\n> ");
@@ -241,4 +231,4 @@ async function cliLoop(): Promise<void> {
 
 cliLoop().catch(console.error);
 
-export { fetchCosense, walk, loadJsonFile };
+export { fetchCosense, walk };
