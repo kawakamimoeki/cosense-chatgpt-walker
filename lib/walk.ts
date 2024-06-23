@@ -58,7 +58,7 @@ export async function walk(
   }
   console.log("---");
 
-  await askChatGPT(
+  const res = await askChatGPT(
     `Based on hisotry of this conversation and the following context and the initial question "${question}", provide a comprehensive answer:\n\n${exploredPages
       .map((p) => {
         return [
@@ -71,4 +71,5 @@ export async function walk(
       .join("\n")}`,
     messages
   );
+  return res;
 }

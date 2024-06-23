@@ -86,7 +86,14 @@ async function cliLoop(): Promise<void> {
       break;
     }
 
-    await walk(question, cosenseData, queries, exploredPages, messages);
+    const res = await walk(
+      question,
+      cosenseData,
+      queries,
+      exploredPages,
+      messages
+    );
+    console.log(res);
   }
 }
 
