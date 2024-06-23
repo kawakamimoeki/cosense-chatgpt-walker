@@ -56,7 +56,6 @@ export async function walk(
   if (result) {
     await explorePage(result.title, false, cosenseData, exploredPages);
   }
-  console.log("---");
 
   const res = await askChatGPT(
     `Based on hisotry of this conversation and the following context and the initial question "${question}", provide a comprehensive answer:\n\n${exploredPages
