@@ -31,7 +31,8 @@
     "typescript": "^4.9.5"
   },
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "dist/**/*"
   ],
   "repository": {
     "type": "git",
