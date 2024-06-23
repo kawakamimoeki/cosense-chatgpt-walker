@@ -4,6 +4,7 @@ import axios from "axios";
 import OpenAI from "openai";
 import * as readline from "readline";
 import { search } from "fast-fuzzy";
+import { getCache, setCache } from "./cache";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -56,6 +57,7 @@ const queries = [];
 async function fetchCosense(projectName: string): Promise<CosenseData> {
   let skip = 0;
   let cosenseData = new CosenseData(projectName);
+  process.stdout.write("loading all pages");
   while (true) {
     const url = `https://scrapbox.io/api/pages/${projectName}?limit=1000&skip=${skip}`;
     skip += 1000;
@@ -63,7 +65,7 @@ async function fetchCosense(projectName: string): Promise<CosenseData> {
 
     const response = await axios.get(url);
     cosenseData.pages = [...response.data.pages, ...cosenseData.pages];
-    if (skip > response.data.count || skip > 5000) {
+    if (skip > response.data.count) {
       break;
     }
   }
@@ -78,6 +80,9 @@ async function fetchCosensePage(
   const url = `https://scrapbox.io/api/pages/${projectName}/${pageName}/text`;
   try {
     const response = await axios.get(url);
+    if (typeof response.data !== "string") {
+      throw "invalid data";
+    }
     return response.data;
   } catch {
     return pageName;
@@ -207,11 +212,20 @@ function askQuestion(query: string): Promise<string> {
 }
 
 async function cliLoop(): Promise<void> {
-  console.log("Welcome to the Cosense ChatGPT Explorer!");
+  console.log("Welcome to Cosense ChatGPT Walker!");
   console.log("Type your questions or 'exit' to quit.");
 
   let cosenseData;
-  cosenseData = await fetchCosense(process.argv[2]);
+  if (process.argv[3] === "--no-cache") {
+    cosenseData = await fetchCosense(process.argv[2]);
+  } else if (getCache(process.argv[2])) {
+    cosenseData = new CosenseData(process.argv[2]);
+    cosenseData.pages = getCache(process.argv[2]);
+  } else {
+    cosenseData = await fetchCosense(process.argv[2]);
+  }
+
+  setCache(process.argv[2], cosenseData.pages);
 
   while (true) {
     const question = await askQuestion("\n> ");
