@@ -6,20 +6,6 @@
 
 A command-line tool for walking in Cosense(Scrapbox) with ChatGPT.
 
-## Setup
-
-Install cosense-chatgpt-walker using `yarn`:
-
-```
-yarn add --dev cosense-chatgpt-walker
-```
-
-Or `npm`:
-
-```
-npm install --save-dev cosense-chatgpt-walker
-```
-
 ## Usage
 
 ```
@@ -31,7 +17,7 @@ export COSENSE_JSON_PATH=path/to/your.json
 ```
 
 ```bash
-npm run cosense-chatgpt-walker
+npx cosense-chatgpt-walker
 ```
 
 ### Output example
