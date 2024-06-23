@@ -8,6 +8,8 @@ A command-line tool for walking in Cosense(Scrapbox) with ChatGPT.
 
 ## Usage
 
+### CLI
+
 ```
 export OPENAI_API_KEY=your-openai-api-key
 ```
@@ -30,6 +32,23 @@ Search results:
 * おもしろいiPhoneの名前
 ---
 アランケイがしたことは、計算機科学者や教育者、ジャズ演奏家として活動していました。彼は未来を予測する最善の方法は、それを発明することだという考えを持ち、その理念を実現すべくDynabook構想を提唱しました。この構想は、すべての年齢の子供たちのためのパーソナルコンピューターを提案しており、iPhoneやiPadの登場によって実現が遠のいてしまっていると感じています。彼は車輪の再発明という概念にも共感し、すでにある技術を自ら再び作り上げることに意味を見出しています。また、時計とPCやキーボードを打ちながら考えてるという独自の視点も持っており、スマホのUXが悪いという意見も述べています。アランケイは独自の考え方や発想を持ち合わせており、先進的な技術や概念を通して未来を切り拓くことに貢献して...
+```
+
+### Typescript
+
+```typescript
+const messages = new Array<any>();
+const exploredPages = new Array<CosensePage>();
+const queries = [];
+const data = await fetchCosense(projectName);
+const { query, pages } = await walk(
+  "アランケイがしたことは",
+  data,
+  queries,
+  exploredPages
+);
+const res = await askChatGPT(question, pages, messages);
+console.log(res);
 ```
 
 ## Contributing
