@@ -116,7 +116,8 @@ async function explorePage(
   resume: boolean = false,
   cosenseData: CosenseData
 ): Promise<void> {
-  // if (!resume && exploredPages.find((p) => p.title === pageTitle)) return;
+  if (!resume && exploredPages.find((p) => p.title === pageTitle)) return;
+  if (exploredPages.length > 5) return;
   const page = await cosenseData.search(pageTitle);
 
   if (!page) {
@@ -126,10 +127,6 @@ async function explorePage(
   if (exploredPages.find((p) => p.title === page.title)) return;
   exploredPages.push(page);
   console.log(`* ${page.title}`);
-
-  if (exploredPages.length > 5) {
-    return;
-  }
 
   const links = page.content.match(/\[([^\]]+)\]/g) || [];
   for await (const link of links) {
