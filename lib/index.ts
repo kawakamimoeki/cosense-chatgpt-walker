@@ -89,6 +89,7 @@ async function askChatGPT(prompt: string): Promise<string | null> {
       content += c;
       process.stdout.write(c);
     }
+    messages.push({ role: "assistant", content });
   } catch (error) {
     console.error("Error calling ChatGPT API:", error);
     return null;
@@ -171,7 +172,7 @@ async function explore(question: string) {
         return [
           "----",
           `title: ${p.title}`,
-          `content: ${p.lines.join("\n")}`,
+          `content: ${p.lines.slice(50).join("\n")}`,
           "----",
         ].join("\n");
       })
