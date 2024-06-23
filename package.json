@@ -1,10 +1,10 @@
 {
   "name": "cosense-chatgpt-walker",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "A command-line tool for walking in Cosense(Scrapbox) with ChatGPT.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "bin": "dist/index.js",
+  "bin": "dist/cli.js",
   "scripts": {
     "build": "tsc",
     "test": "jest",

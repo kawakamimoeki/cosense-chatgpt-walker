@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import * as readline from "readline";
 import { getCache, setCache } from "./cache";
 import { fetchCosense } from "./fetchCosense";
@@ -17,7 +15,7 @@ function askQuestion(query: string): Promise<string> {
   return new Promise((resolve) => rl.question(query, resolve));
 }
 
-async function cliLoop(): Promise<void> {
+export async function cliLoop(): Promise<void> {
   console.log("Welcome to Cosense ChatGPT Walker!");
   console.log("Type your questions or 'exit' to quit.");
 
@@ -74,7 +72,5 @@ async function cliLoop(): Promise<void> {
     console.log(res);
   }
 }
-
-cliLoop().catch(console.error);
 
 export { fetchCosense, walk };
