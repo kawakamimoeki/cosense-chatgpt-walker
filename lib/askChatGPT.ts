@@ -11,7 +11,7 @@ export async function askChatGPT(
         return [
           "----",
           `title: ${p.title}`,
-          `content: ${p.content}`,
+          `content: ${p.content.substring(0, 800)}`,
           "----",
         ].join("\n");
       })
