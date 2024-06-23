@@ -4,8 +4,6 @@ import axios from "axios";
 import OpenAI from "openai";
 import * as readline from "readline";
 import { search } from "fast-fuzzy";
-import * as fs from "fs";
-import * as path from "path";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -51,9 +49,9 @@ class CosenseData {
   }
 }
 
-let messages: Array<any> = [];
+const messages: Array<any> = [];
 const exploredPages = new Array<CosensePage>();
-let queries = [];
+const queries = [];
 
 async function fetchCosense(projectName: string): Promise<CosenseData> {
   let skip = 0;
@@ -61,6 +59,7 @@ async function fetchCosense(projectName: string): Promise<CosenseData> {
   while (true) {
     const url = `https://scrapbox.io/api/pages/${projectName}?limit=1000&skip=${skip}`;
     skip += 1000;
+    process.stdout.write(".");
 
     const response = await axios.get(url);
     cosenseData.pages = [...response.data.pages, ...cosenseData.pages];
@@ -68,6 +67,7 @@ async function fetchCosense(projectName: string): Promise<CosenseData> {
       break;
     }
   }
+  console.log("");
   return cosenseData;
 }
 
