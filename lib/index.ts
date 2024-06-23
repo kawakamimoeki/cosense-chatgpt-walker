@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
+import axios from "axios";
 import OpenAI from "openai";
 import * as readline from "readline";
 import { search } from "fast-fuzzy";
-import * as fs from "fs";
-import * as path from "path";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -15,7 +14,7 @@ interface CosensePage {
   title: string | null;
   created: number;
   updated: number;
-  lines: Array<string>;
+  descriptions: Array<string>;
 }
 
 interface CosenseProject {
@@ -35,9 +34,11 @@ class CosenseData {
 
   get(pageName: string): string {
     const page = this.pages.find((p) =>
-      p.lines.join("\n").toLowerCase().includes(pageName.toLowerCase())
+      p.descriptions.join("\n").toLowerCase().includes(pageName.toLowerCase())
     );
-    return page ? page.lines.join("\n") : `Page "${pageName}" not found.`;
+    return page
+      ? page.descriptions.join("\n")
+      : `Page "${pageName}" not found.`;
   }
 
   search(query: string): CosensePage {
@@ -54,14 +55,21 @@ let messages: Array<any> = [];
 const exploredPages = new Array<CosensePage>();
 let queries = [];
 
-async function loadJsonFile(filePath: string): Promise<void> {
-  try {
-    const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    cosenseData = new CosenseData(jsonData);
-    console.log("JSON file loaded successfully.");
-  } catch (error) {
-    console.error("Error loading JSON file:", error);
-    process.exit(1);
+async function fetchList(projectName: string): Promise<void> {
+  let skip = 0;
+  while (true) {
+    const url = `https://scrapbox.io/api/pages/${projectName}?limit=1000&skip=${skip}`;
+    skip += 1000;
+
+    try {
+      const response = await axios.get(url);
+      cosenseData = new CosenseData(response.data);
+      if (skip > response.data.count) {
+        break;
+      }
+    } catch (error) {
+      console.error("Error fetching pages:", error);
+    }
   }
 }
 
@@ -78,18 +86,14 @@ async function completion(prompt: string): Promise<string | null> {
 async function askChatGPT(prompt: string): Promise<string | null> {
   try {
     messages.push({ role: "user", content: prompt });
-    const stream = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+    const chatCompletion = openai.chat.completions.create({
       messages,
-      stream: true,
+      model: "gpt-3.5-turbo",
     });
-    let content = "";
-    for await (const chunk of stream) {
-      const c = chunk.choices[0]?.delta?.content || "";
-      content += c;
-      process.stdout.write(c);
-    }
-    messages.push({ role: "assistant", content });
+
+    const message = (await chatCompletion).choices[0].message;
+    messages.push({ role: "assistant", content: message.content });
+    console.log(message.content);
   } catch (error) {
     console.error("Error calling ChatGPT API:", error);
     return null;
@@ -115,7 +119,7 @@ async function explore(question: string) {
       return;
     }
 
-    const links = page.lines.join("\n").match(/\[([^\]]+)\]/g) || [];
+    const links = page.descriptions.join("\n").match(/\[([^\]]+)\]/g) || [];
     for (const link of links) {
       explorePage(link.slice(1, -1));
     }
@@ -176,7 +180,7 @@ async function explore(question: string) {
         return [
           "----",
           `title: ${p.title}`,
-          `content: ${p.lines.slice(50).join("\n")}`,
+          `content: ${p.descriptions.slice(50).join("\n")}`,
           "----",
         ].join("\n");
       })
@@ -197,8 +201,7 @@ async function cliLoop(): Promise<void> {
   console.log("Welcome to the Cosense ChatGPT Explorer!");
   console.log("Type your questions or 'exit' to quit.");
 
-  const jsonFilePath = process.env.COSENSE_DATA_PATH;
-  await loadJsonFile(path.resolve(jsonFilePath));
+  await fetchList(process.argv[2]);
 
   while (true) {
     const question = await askQuestion("\n> ");

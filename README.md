@@ -12,12 +12,8 @@ A command-line tool for walking in Cosense(Scrapbox) with ChatGPT.
 export OPENAI_API_KEY=your-openai-api-key
 ```
 
-```
-export COSENSE_JSON_PATH=path/to/your.json
-```
-
 ```bash
-npx cosense-chatgpt-walker
+npx cosense-chatgpt-walker your-cosense-project-name
 ```
 
 ```
