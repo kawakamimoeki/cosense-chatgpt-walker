@@ -1,10 +1,21 @@
 import { openai } from "./openai";
 
 export async function askChatGPT(
-  prompt: string,
+  question,
+  pages,
   messages: Array<any>
 ): Promise<string | null> {
   try {
+    const prompt = `Based on hisotry of this conversation and the following context and the initial question "${question}", provide a comprehensive answer:\n\n${pages
+      .map((p) => {
+        return [
+          "----",
+          `title: ${p.title}`,
+          `content: ${p.content}`,
+          "----",
+        ].join("\n");
+      })
+      .join("\n")}`;
     messages.push({ role: "user", content: prompt });
     const chatCompletion = openai.chat.completions.create({
       messages,

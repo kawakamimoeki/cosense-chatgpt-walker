@@ -56,19 +56,7 @@ export async function cliLoop(): Promise<void> {
     pages.forEach((p) => {
       console.log(`* ${p.title}`);
     });
-    const res = await askChatGPT(
-      `Based on hisotry of this conversation and the following context and the initial question "${question}", provide a comprehensive answer:\n\n${pages
-        .map((p) => {
-          return [
-            "----",
-            `title: ${p.title}`,
-            `content: ${p.content}`,
-            "----",
-          ].join("\n");
-        })
-        .join("\n")}`,
-      messages
-    );
+    const res = await askChatGPT(question, pages, messages);
     console.log(res);
   }
 }
