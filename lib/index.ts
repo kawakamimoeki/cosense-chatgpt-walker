@@ -142,7 +142,11 @@ async function explore(question: string) {
     Search query:`);
     console.log(`Query: ${query}`);
     if (query.match("null")) {
-      const resumePageTitle = exploredPages[exploredPages.length - 1].title;
+      const resumePage = exploredPages[exploredPages.length - 1];
+      if (!resumePage) {
+        break;
+      }
+      const resumePageTitle = resumePage.title;
       exploredPages.splice(0, 5);
       explorePage(resumePageTitle, true);
     }
@@ -161,7 +165,7 @@ async function explore(question: string) {
   }
   if (result) {
     explorePage(result.title);
-    console.log("Search results:");
+    console.log("Sources:");
     exploredPages.forEach((r) => console.log(`* ${r.title}`));
   }
   console.log("---");
