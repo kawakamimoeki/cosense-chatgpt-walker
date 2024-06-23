@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CosenseData } from ".";
+import { CosenseData } from "./cosenseData";
 
 export async function fetchCosense(projectName: string): Promise<CosenseData> {
   let skip = 0;

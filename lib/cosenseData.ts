@@ -1,7 +1,7 @@
 import { search } from "fast-fuzzy";
 import { fetchCosensePage } from "./fetchCosensePage";
 
-export interface CosensePage {
+interface CosensePage {
   id: number;
   title: string | null;
   created: number;
@@ -9,7 +9,7 @@ export interface CosensePage {
   content?: string;
 }
 
-export interface CosenseProject {
+interface CosenseProject {
   name: string;
   displayName: string;
   exported: number;
@@ -17,7 +17,7 @@ export interface CosenseProject {
   pages: Array<CosensePage>;
 }
 
-export class CosenseData {
+class CosenseData {
   pages: CosensePage[];
   projectName: string;
 
@@ -40,3 +40,5 @@ export class CosenseData {
     return result;
   }
 }
+
+export { CosenseData, CosensePage, CosenseProject };

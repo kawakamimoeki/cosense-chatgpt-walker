@@ -1,5 +1,4 @@
-import { CosenseData, CosensePage } from ".";
-import { askChatGPT } from "./askChatGPT";
+import { CosenseData, CosensePage } from "./cosenseData";
 import { completion } from "./completion";
 import { explorePage } from "./explorePage";
 
@@ -7,8 +6,7 @@ export async function walk(
   question: string,
   cosenseData: CosenseData,
   queries: Array<string>,
-  exploredPages: Array<CosensePage>,
-  messages: Array<any>
+  exploredPages: Array<CosensePage>
 ) {
   let result;
   let query = "";

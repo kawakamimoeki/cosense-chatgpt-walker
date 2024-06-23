@@ -5,7 +5,8 @@ import { getCache, setCache } from "./cache";
 import { fetchCosense } from "./fetchCosense";
 import { walk } from "./walk";
 import { askChatGPT } from "./askChatGPT";
-import { CosenseData, CosensePage } from "./cosenseData";
+import { CosenseData } from "./cosenseData";
+import type { CosensePage } from "./cosenseData";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -50,8 +51,7 @@ async function cliLoop(): Promise<void> {
       question,
       cosenseData,
       queries,
-      exploredPages,
-      messages
+      exploredPages
     );
     console.log(`Search query: ${query}`);
     console.log(`Source pages:`);

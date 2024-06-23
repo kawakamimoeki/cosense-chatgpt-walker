@@ -1,4 +1,4 @@
-import { CosenseData, CosensePage } from ".";
+import { CosenseData, CosensePage } from "./cosenseData";
 
 export async function explorePage(
   pageTitle: string,
