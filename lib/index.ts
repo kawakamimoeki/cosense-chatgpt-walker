@@ -6,6 +6,7 @@ import { getCache, setCache } from "./cache";
 import { fetchCosensePage } from "./fetchCosensePage";
 import { fetchCosense } from "./fetchCosense";
 import { walk } from "./walk";
+import { askChatGPT } from "./askChatGPT";
 
 export interface CosensePage {
   id: number;
@@ -86,11 +87,29 @@ async function cliLoop(): Promise<void> {
       break;
     }
 
-    const res = await walk(
+    const { query, pages } = await walk(
       question,
       cosenseData,
       queries,
       exploredPages,
+      messages
+    );
+    console.log(`Search query: ${query}`);
+    console.log(`Source pages:`);
+    pages.forEach((p) => {
+      console.log(`* ${p.title}`);
+    });
+    const res = await askChatGPT(
+      `Based on hisotry of this conversation and the following context and the initial question "${question}", provide a comprehensive answer:\n\n${pages
+        .map((p) => {
+          return [
+            "----",
+            `title: ${p.title}`,
+            `content: ${p.content}`,
+            "----",
+          ].join("\n");
+        })
+        .join("\n")}`,
       messages
     );
     console.log(res);

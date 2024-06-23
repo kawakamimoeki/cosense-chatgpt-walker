@@ -16,7 +16,6 @@ export async function explorePage(
 
   if (exploredPages.find((p) => p.title === page.title)) return;
   exploredPages.push(page);
-  console.log(`* ${page.title}`);
 
   const links = page.content.match(/\[([^\]]+)\]/g) || [];
   for await (const link of links) {
