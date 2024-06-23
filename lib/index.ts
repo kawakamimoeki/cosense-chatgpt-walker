@@ -141,8 +141,9 @@ async function explore(question: string) {
     Search query:`);
     console.log(`Query: ${query}`);
     if (query.match("null")) {
+      const resumePageTitle = exploredPages[exploredPages.length - 1].title;
       exploredPages.splice(0, 5);
-      explorePage(exploredPages[exploredPages.length - 1].title, true);
+      explorePage(resumePageTitle, true);
     }
     if (query === queries[queries.length - 1]) {
       break;
