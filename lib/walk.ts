@@ -40,6 +40,7 @@ export async function walk(
     if (query === queries[queries.length - 1]) break;
     queries.push(query);
     result = await cosenseData.search(query);
+    if (!result) continue;
     if (result?.title || tries > 5) break;
     tries += 1;
   }

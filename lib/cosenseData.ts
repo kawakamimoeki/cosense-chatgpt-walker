@@ -8,6 +8,11 @@ interface CosensePage {
   updated: number;
   content?: string;
   descriptions?: Array<string>;
+  lines?: Array<string>;
+  relatedPages: {
+    links1hop: Array<CosensePage>,
+    links2hop: Array<CosensePage>
+  }
 }
 
 interface CosenseProject {
@@ -34,13 +39,20 @@ class CosenseData {
     })
     const fuse = new Fuse(this.pages, { keys: ["title", "content"] });
     const results = fuse.search(query);
-    const result = results[0].item
+
+    if (results.length === 0) {
+      return null;
+    }
+
+    const title = results[0].item.title
+
+    const result = await fetchCosensePage(this.projectName, title);
 
     if (!result) {
       return null;
     }
 
-    result.content = await fetchCosensePage(this.projectName, result.title);
+    result.content = result.lines.join("\n");
     return result;
   }
 }
