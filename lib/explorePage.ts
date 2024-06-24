@@ -4,10 +4,12 @@ export async function explorePage(
   pageTitle: string,
   resume: boolean = false,
   cosenseData: CosenseData,
-  exploredPages: Array<CosensePage>
+  exploredPages: Array<CosensePage>,
+  depth: number = 0
 ): Promise<void> {
   if (!resume && exploredPages.find((p) => p.title === pageTitle)) return;
   if (exploredPages.length > 5) return;
+  if (depth > 2) return;
   const page = await cosenseData.search(pageTitle);
 
   if (!page) {
@@ -21,6 +23,6 @@ export async function explorePage(
 
   const links = page.content.match(/\[([^\]]+)\]/g) || [];
   for await (const link of links) {
-    await explorePage(link.slice(1, -1), resume, cosenseData, exploredPages);
+    await explorePage(link.slice(1, -1), resume, cosenseData, exploredPages, depth + 1);
   }
 }
