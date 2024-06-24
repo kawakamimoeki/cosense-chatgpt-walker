@@ -24,6 +24,7 @@ export async function askChatGPT(
 
     const message = (await chatCompletion).choices[0].message;
     messages.push({ role: "assistant", content: message.content });
+    console.log(message.content);
     return message.content;
   } catch (error) {
     console.error("Error calling ChatGPT API:", error);

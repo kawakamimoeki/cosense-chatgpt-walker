@@ -14,6 +14,8 @@ export async function explorePage(
     return;
   }
 
+  console.log(`* ${page.title}`);
+
   if (exploredPages.find((p) => p.title === page.title)) return;
   exploredPages.push(page);
 

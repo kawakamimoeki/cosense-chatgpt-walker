@@ -28,6 +28,8 @@ export async function walk(
     }
 
     Search query:`);
+    console.log(`Search query: ${query}`);
+    console.log(`Source pages:`);
     if (query.match("null")) {
       const resumePage = exploredPages[exploredPages.length - 1];
       if (!resumePage) break;

@@ -51,13 +51,7 @@ export async function cliLoop(): Promise<void> {
       queries,
       exploredPages
     );
-    console.log(`Search query: ${query}`);
-    console.log(`Source pages:`);
-    pages.forEach((p) => {
-      console.log(`* ${p.title}`);
-    });
     const res = await askChatGPT(question, pages, messages);
-    console.log(res);
   }
 }
 
