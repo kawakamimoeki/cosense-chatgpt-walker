@@ -1,5 +1,5 @@
-import { search } from "fast-fuzzy";
 import { fetchCosensePage } from "./fetchCosensePage";
+const Fuse = require('fuse.js')
 
 interface CosensePage {
   id: number;
@@ -7,6 +7,7 @@ interface CosensePage {
   created: number;
   updated: number;
   content?: string;
+  descriptions?: Array<string>;
 }
 
 interface CosenseProject {
@@ -27,10 +28,13 @@ class CosenseData {
   }
 
   async search(query: string): Promise<CosensePage> {
-    const results = search(query, this.pages, {
-      keySelector: (obj) => obj.title,
-    });
-    const result = results[0];
+    const pages = this.pages;
+    pages.forEach((page) => {
+      page.content = page.descriptions.join("\n")
+    })
+    const fuse = new Fuse(this.pages, { keys: ["title", "content"] });
+    const results = fuse.search(query);
+    const result = results[0].item
 
     if (!result) {
       return null;
