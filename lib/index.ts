@@ -26,11 +26,13 @@ export async function cliLoop(): Promise<void> {
   const name = process.argv[2];
 
   if (process.argv[3] === "--no-cache") {
+    console.log("Loading all pages...");
     cosenseData = await fetchCosense(name);
   } else if (getCache(name)) {
     cosenseData = new CosenseData(name);
     cosenseData.pages = getCache(name);
   } else {
+    console.log("Loading all pages...");
     cosenseData = await fetchCosense(name);
   }
 
